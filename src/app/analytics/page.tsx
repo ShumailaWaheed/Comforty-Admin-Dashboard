@@ -1,11 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Line } from "react-chartjs-2";
+import { Line, Bar } from "react-chartjs-2";
+import Sidebar from "@/components/sidebar";
+import DeviceUsageChart from "@/components/DeviceChart";
+import CountrySalesChart from "@/components/CountriesChart";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
+  BarElement,
   LineElement,
   PointElement,
   Title,
@@ -14,11 +18,18 @@ import {
   Filler,
   ChartOptions,
 } from "chart.js";
-import DeviceUsageChart from "@/components/DeviceChart";
-import CountrySalesChart from "@/components/CountriesChart";
 
-// Register Chart.js components
-ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Title, Tooltip, Legend, Filler);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 interface SalesData {
   date: string;
@@ -92,6 +103,19 @@ const AnalyticsPage = () => {
     ],
   };
 
+  const salesBarData = {
+    labels: salesData.map((sale) => sale.date),
+    datasets: [
+      {
+        label: "Sales Revenue",
+        data: salesData.map((sale) => sale.amount),
+        backgroundColor: "rgba(2, 159, 174, 0.6)",
+        borderColor: "#029FAE",
+        borderWidth: 1,
+      },
+    ],
+  };
+
   const options: ChartOptions<"line"> = {
     responsive: true,
     maintainAspectRatio: false,
@@ -101,7 +125,7 @@ const AnalyticsPage = () => {
       onComplete: () => {
         console.log("Animation complete!");
       },
-    } as Partial<ChartOptions<"line">["animation"]>, 
+    } as Partial<ChartOptions<"line">["animation"]>,
     elements: {
       point: {
         radius: 6,
@@ -114,46 +138,54 @@ const AnalyticsPage = () => {
       },
     },
     plugins: {
-      tooltip: {
-        enabled: true,
-      },
-      legend: {
-        display: true,
-        labels: {
-          color: "#029FAE",
-        },
-      },
+      tooltip: { enabled: true },
+      legend: { display: true, labels: { color: "#029FAE" } },
     },
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 p-6">
-      <h1 className="text-4xl font-semibold text-center text-[#029FAE] mb-12">
-        Analytics Dashboard
-      </h1>
+    <div className="flex h-screen bg-gray-50">
+      <Sidebar />
 
-      {/* Sales Analytics Chart */}
-      <div className="bg-white p-6 rounded-xl shadow-xl mb-8 hover:shadow-2xl transition-shadow duration-300">
-        <h2 className="text-2xl font-semibold text-[#029FAE] mb-4">Sales Analytics</h2>
-        <div className="relative h-80">
-          <Line data={salesChartData} options={options} />
-        </div>
-      </div>
-
-      {/* Device Usage and Country Sales Analytics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Device Usage Analytics */}
-        <div className="bg-white p-6 rounded-xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
-          <h2 className="text-2xl font-semibold text-[#029FAE] mb-4">Device Usage</h2>
-          <div className="relative h-72">
-            <DeviceUsageChart data={deviceData} />
+      <div className="flex-1 p-6 overflow-y-auto">
+        <div className="bg-white p-6 rounded-xl shadow-xl mb-8 hover:shadow-2xl transition-shadow duration-300">
+          <h2 className="text-2xl font-semibold text-black mb-4">
+            Sales Analytics (Line Chart)
+          </h2>
+          <div className="relative h-80 animate-fade-in">
+            <Line data={salesChartData} options={options} />
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
-          <h2 className="text-2xl font-semibold text-[#029FAE] mb-4">Sales by Country</h2>
-          <div className="relative h-60">
-            <CountrySalesChart data={countryData} />
+        <div className="bg-white p-6 rounded-xl shadow-xl mb-8 hover:shadow-2xl transition-shadow duration-300">
+          <h2 className="text-2xl font-semibold text-black mb-4">
+            Sales Revenue (Bar Chart)
+          </h2>
+          <div className="relative h-80 animate-fade-in">
+            <Bar data={salesBarData} options={{ responsive: true }} />
+          </div>
+        </div>
+
+        {/* Device Usage and Country Sales */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Device Usage Analytics */}
+          <div className="bg-white p-6 rounded-xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
+            <h2 className="text-2xl font-semibold text-black mb-4">
+              Device Usage
+            </h2>
+            <div className="relative h-72">
+              <DeviceUsageChart data={deviceData} />
+            </div>
+          </div>
+
+          {/* Sales by Country */}
+          <div className="bg-white p-6 rounded-xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
+            <h2 className="text-2xl font-semibold text-black mb-4">
+              Sales by Country
+            </h2>
+            <div className="relative h-60">
+              <CountrySalesChart data={countryData} />
+            </div>
           </div>
         </div>
       </div>

@@ -1,11 +1,11 @@
 "use client";
 import Sidebar from "@/components/sidebar";
 import { useState } from "react";
-import { Search, Edit, Trash2 } from "lucide-react";
+import {  Edit, Trash2 } from "lucide-react";
 
-export default function Customers() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [customers, setCustomers] = useState([
+function Customers() {
+  const [searchTerm] = useState<string>("");
+  const [customers, setCustomers] = useState<{ id: string; name: string; email: string; status: string }[]>([
     { id: "CUS1234", name: "John Doe", email: "john@example.com", status: "Active" },
     { id: "CUS5678", name: "Jane Smith", email: "jane@example.com", status: "Inactive" },
     { id: "CUS9101", name: "Alice Brown", email: "alice@example.com", status: "Active" },
@@ -34,47 +34,35 @@ export default function Customers() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex flex-col md:flex-row h-screen bg-gray-100">
       <Sidebar />
-      <main className="flex-1 p-6">
-        <h1 className="text-3xl font-bold text-[#029FAE] mb-6">Customer Management</h1>
-
-        <div className="mb-6 flex items-center">
-          <Search size={20} className="mr-2 text-gray-500" />
-          <input
-            type="text"
-            className="w-1/3 p-2 border rounded-lg"
-            placeholder="Search customers"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-
+      <main className="flex-1 p-4 md:p-6 w-full">
+        <h1 className="text-2xl md:text-3xl font-bold text-black mb-4 md:mb-6">Customer Management</h1>
         <div className="overflow-x-auto bg-white shadow-lg rounded-lg p-4">
           <table className="min-w-full table-auto">
             <thead>
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Customer Name</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Email</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Actions</th>
+              <tr className="bg-[#272343] text-white">
+                <th className="px-4 py-2 text-left text-sm font-semibold">Customer Name</th>
+                <th className="px-4 py-2 text-left text-sm font-semibold">Email</th>
+                <th className="px-4 py-2 text-left text-sm font-semibold">Status</th>
+                <th className="px-4 py-2 text-left text-sm font-semibold">Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredCustomers.map((customer) => (
-                <tr key={customer.id} className="border-b">
-                  <td className="px-6 py-3 text-sm font-medium text-gray-800">{customer.name}</td>
-                  <td className="px-6 py-3 text-sm text-gray-600">{customer.email}</td>
-                  <td className="px-6 py-3 text-sm">
+                <tr key={customer.id} className="border-b hover:bg-gray-100">
+                  <td className="px-4 py-2 text-sm font-medium text-gray-800">{customer.name}</td>
+                  <td className="px-4 py-2 text-sm text-gray-600">{customer.email}</td>
+                  <td className="px-4 py-2 text-sm">
                     <span
-                      className={`inline-block px-2 py-1 rounded-full text-white ${
+                      className={`inline-block px-3 py-1 rounded-full text-white text-xs md:text-sm ${
                         customer.status === "Active" ? "bg-green-500" : "bg-red-500"
                       }`}
                     >
                       {customer.status}
                     </span>
                   </td>
-                  <td className="px-6 py-3 text-sm">
+                  <td className="px-4 py-2 text-sm flex gap-2">
                     <button
                       className="text-[#029FAE] hover:text-[#027e85]"
                       onClick={() => handleStatusChange(customer.id)}
@@ -82,7 +70,7 @@ export default function Customers() {
                       <Edit size={18} />
                     </button>
                     <button
-                      className="ml-3 text-red-500 hover:text-red-700"
+                      className="text-red-500 hover:text-red-700"
                       onClick={() => handleDelete(customer.id)}
                     >
                       <Trash2 size={18} />
@@ -98,3 +86,4 @@ export default function Customers() {
   );
 }
 
+export default Customers;

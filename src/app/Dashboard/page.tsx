@@ -1,11 +1,45 @@
-"use client";
+"use client"
+
 import { useState, useEffect } from "react";
 import Sidebar from "@/components/sidebar";
 import StatsCard from "@/components/StatesCard";
 import SalesChart from "@/components/SalesCard";
 import OrdersChart from "@/components/OrderChart";
 
-const getMockData = () => {
+interface DashboardData {
+  totalCustomers: number;
+  totalRevenue: number;
+  totalOrders: number;
+  totalReturns: number;
+  salesData: {
+    labels: string[];
+    datasets: {
+      label: string;
+      data: number[];
+      borderColor: string;
+      backgroundColor: string;
+      fill: boolean;
+    }[];
+  };
+  productCategoryData: {
+    labels: string[];
+    datasets: {
+      label: string;
+      data: number[];
+      backgroundColor: string[];
+    }[];
+  };
+  countrySalesData: {
+    labels: string[];
+    datasets: {
+      label: string;
+      data: number[];
+      backgroundColor: string[];
+    }[];
+  };
+}
+
+const getMockData = (): DashboardData => {
   return {
     totalCustomers: 567890,
     totalRevenue: 3465,
@@ -47,7 +81,8 @@ const getMockData = () => {
 };
 
 const Dashboard = () => {
-  const [data, setData] = useState(null);
+  // Explicitly define the type of `data`
+  const [data, setData] = useState<DashboardData | null>(null);
 
   useEffect(() => {
     const mockData = getMockData();
@@ -73,8 +108,7 @@ const Dashboard = () => {
           <OrdersChart data={data.productCategoryData} />
         </div>
 
-        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-        </div>
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6"></div>
       </main>
     </div>
   );

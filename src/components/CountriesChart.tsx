@@ -1,24 +1,23 @@
-import { Pie } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Title, Tooltip, Legend } from "chart.js";
+"use client";
+import { Bar } from "react-chartjs-2";
 
-// Register the necessary components
-ChartJS.register(ArcElement, Title, Tooltip, Legend);
+interface CountrySalesChartProps {
+  data: { country: string; sales: number }[];
+}
 
-const CountrySalesChart = ({ data }: { data: any }) => {
+const CountrySalesChart = ({ data }: CountrySalesChartProps) => {
   const chartData = {
-    labels: data.map((country: any) => country.country),
+    labels: data.map((item) => item.country),
     datasets: [
       {
-        data: data.map((country: any) => country.sales),
-        backgroundColor: ["#FF8A5C", "#FFB24C", "#3CB3A4", "#4DAE76"],
-        hoverBackgroundColor: ["#FF734A", "#FF9A2A", "#32A47C", "#3D9B5C"],
-        borderColor: "#fff",
-        borderWidth: 2,
+        label: "Sales",
+        data: data.map((item) => item.sales),
+        backgroundColor: "#029FAE",
       },
     ],
   };
 
-  return <Pie data={chartData} options={{ responsive: true, maintainAspectRatio: false }} />;
+  return <Bar data={chartData} />;
 };
 
 export default CountrySalesChart;

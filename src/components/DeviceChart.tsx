@@ -3,12 +3,17 @@ import { Chart as ChartJS, ArcElement, Title, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Title, Tooltip, Legend);
 
-const DeviceUsageChart = ({ data }: { data: any }) => {
+interface DeviceUsageData {
+  device: string;
+  usage: number;
+}
+
+const DeviceUsageChart = ({ data }: { data: DeviceUsageData[] }) => {
   const chartData = {
-    labels: data.map((device: any) => device.device),
+    labels: data.map((device) => device.device),
     datasets: [
       {
-        data: data.map((device: any) => device.usage),
+        data: data.map((device) => device.usage),
         backgroundColor: ["#4C74A4", "#29A89D", "#F4C542"],
         hoverBackgroundColor: ["#3C5B7C", "#238B7C", "#D3A136"],
         borderColor: "#fff",
@@ -21,4 +26,3 @@ const DeviceUsageChart = ({ data }: { data: any }) => {
 };
 
 export default DeviceUsageChart;
-

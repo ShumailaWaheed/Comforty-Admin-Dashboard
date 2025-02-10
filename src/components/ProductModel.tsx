@@ -8,13 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-    DialogFooter,
-  } from "@/components/ui/dialog";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 interface AddProductModalProps {
   onSave: (newProduct: Product) => void;
@@ -36,6 +36,7 @@ export default function AddProductModal({
   const [imageUrl, setImageUrl] = useState("");
   const [imagePreview, setImagePreview] = useState<string>("");
 
+  // Handle File Upload
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -44,19 +45,20 @@ export default function AddProductModal({
       reader.onloadend = () => {
         if (typeof reader.result === "string") {
           setImagePreview(reader.result);
-          setImageUrl(reader.result); 
+          setImageUrl(reader.result);
         }
       };
       reader.readAsDataURL(file);
     }
   };
 
-
+  // Handle Manual Image URL Input
   const handleImageUrlChange = (e: ChangeEvent<HTMLInputElement>) => {
     setImageUrl(e.target.value);
     setImagePreview(e.target.value);
   };
 
+  // Handle Form Submission
   const handleSubmit = () => {
     const newProduct: Product = {
       _id: Date.now().toString(),
@@ -64,19 +66,19 @@ export default function AddProductModal({
       price: parseFloat(price),
       originalPrice: parseFloat(price),
       priceWithoutDiscount: parseFloat(price),
-      badge: "",
+      badge: "", // Default empty badge
       image: {
         asset: {
           _id: "",
-          url: imageUrl || "https://via.placeholder.com/150",
+          url: imageUrl || "https://via.placeholder.com/150", // Default placeholder image
         },
       },
-      imageUrl: imageUrl,
-      category: { title: category || "Uncategorized" },
+      imageUrl: imageUrl, // Store direct image URL
+      category: { title: category || "Uncategorized" }, // Default category
       description,
-      inventory: 0,
-      tags: [],
-      products: [],
+      inventory: 0, // Default inventory count
+      tags: [], // Default empty tags array
+      products: 0, // ✅ FIXED: Assigned a number instead of an array
     };
     onSave(newProduct);
     setOpen(false);

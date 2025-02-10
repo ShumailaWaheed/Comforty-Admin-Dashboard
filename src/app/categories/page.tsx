@@ -1,24 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
-import { client } from "@/sanity/lib/client";
-import { Product } from "@/types/products";
 import Link from "next/link";
 import Sidebar from "@/components/sidebar";
 import Image from "next/image";
-
-const fetchProductsQuery = `*[_type == "products"] {
-  _id,
-  title,
-  price,
-  image {
-    asset -> {
-      _id,
-      url
-    }
-  },
-  category -> { title },
-  description
-}`;
+import { fetchProducts } from "./fetchproducts";
+import { Product } from "@/types/products";
 
 export default function CategoryPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -29,26 +15,31 @@ export default function CategoryPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
 
-  const fetchProducts = async () => {
-    try {
-      const data: Product[] = await client.fetch(fetchProductsQuery);
-      setProducts(data);
-      setFilteredProducts(data);
-
-      const uniqueCategories: string[] = [
-        "All",
-        ...Array.from(new Set(data.map((product) => product.category?.title).filter(Boolean)))
-      ];
-      setCategories(uniqueCategories);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchProducts();
+    const loadProducts = async () => {
+      try {
+        const data = await fetchProducts();
+        setProducts(data);
+        setFilteredProducts(data);
+        const uniqueCategories: string[] = [
+          "All",
+          ...Array.from(
+            new Set(
+              data
+                .map((product) => product.category?.title)
+                .filter((title): title is string => title !== undefined)
+            )
+          ),
+        ];
+        setCategories(uniqueCategories);
+      } catch (error) {
+        console.error("Error loading products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
   }, []);
 
   const handleFilter = (category: string) => {
@@ -74,11 +65,6 @@ export default function CategoryPage() {
       </div>
 
       <main className="flex-1 p-6 overflow-y-auto">
-        <h1 className="text-4xl font-bold text-center text-[#029FAE] mb-6">
-          Category Page
-        </h1>
-
-        {/* Searchable Category Filter Section */}
         <div className="relative mb-6 max-w-sm mx-auto">
           <input
             type="text"
@@ -129,11 +115,11 @@ export default function CategoryPage() {
                 <h2 className="text-lg font-semibold text-gray-700 mt-3">
                   {product.title}
                 </h2>
-                <Link href={`/components/productsdetail/${product._id}/Detail`}>
-                  <button className="mt-3 px-4 py-2 bg-[#029FAE] text-white rounded-full hover:bg-[#027e85] transition-all shadow-md">
-                    View Details
-                  </button>
-                </Link>
+                <Link href={`/product/${product._id}`}>
+                <button className="mt-3 px-4 py-2 bg-[#029FAE] text-white rounded-full hover:bg-[#027e85] transition-all shadow-md">
+                 View Details
+                </button>
+              </Link>
               </div>
             ))}
           </div>
