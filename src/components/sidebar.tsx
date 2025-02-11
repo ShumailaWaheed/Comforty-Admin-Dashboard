@@ -57,7 +57,7 @@ export default function Sidebar() {
         </nav>
 
         <Link
-          href="/signin" 
+          href="/auth/login" 
           className="w-full flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-gray-200 transition-all"
         >
           <LogOut size={20} />

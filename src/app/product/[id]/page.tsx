@@ -89,7 +89,7 @@ export default async function ProductDetail({ params }: { params: { id: string }
                 <button className="px-6 py-2 bg-[#029FAE] text-white rounded-lg hover:bg-[#027e85] transition">
                   Add to Cart
                 </button>
-                <Link href="/">
+                <Link href="/dashboard">
                   <button className="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition">
                     Back to Home
                   </button>
